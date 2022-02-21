@@ -8,9 +8,12 @@ public class PlayerController : MonoBehaviour
     public float rotationspeed = 50f;
     public Rigidbody2D rb;
 
+    public GameObject bullet; 
 
     private Vector2 movement;
-    private int gaze = 0; 
+    private int gaze = 0;
+
+    private bool isShooted = false;
 
 
     // Start is called before the first frame update
@@ -69,6 +72,28 @@ public class PlayerController : MonoBehaviour
                 gaze = 0;
             }
         }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (!isShooted)
+            {
+                shoot();
+                isShooted = true;
+            }
+        }
+        else
+        {
+            if (isShooted)
+            {
+                isShooted = false;
+            }
+        }
+    }
+
+    private void shoot()
+    {
+        var bulletItem = Instantiate(bullet, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.identity);
+        bulletItem.GetComponent<Rigidbody2D>().rotation = rb.rotation;
     }
 
     private void FixedUpdate()
