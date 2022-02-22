@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
     public float rotationspeed = 50f;
     public Rigidbody2D rb;
 
-    public GameObject bullet; 
+    public GameObject bullet;
+    public GameModel model;
 
     private Vector2 movement;
     private int gaze = 0;
@@ -25,7 +26,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!model.isPlayerAlive)
+        {
+            return;
+        }
         if (Input.GetKey("w"))
         {
             movement.y = 1;
@@ -94,10 +98,15 @@ public class PlayerController : MonoBehaviour
     {
         var bulletItem = Instantiate(bullet, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.identity);
         bulletItem.GetComponent<Rigidbody2D>().rotation = rb.rotation;
+        bulletItem.GetComponent<BulletController>().SetModel(model, gameObject);
     }
 
     private void FixedUpdate()
     {
+        if (!model.isPlayerAlive)
+        {
+            return;
+        }
         //movement
         rb.MovePosition(rb.position + movement * movespeed * Time.fixedDeltaTime);
         rb.MoveRotation(rb.rotation + gaze * rotationspeed * Time.fixedDeltaTime);
