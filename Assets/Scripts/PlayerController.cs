@@ -20,13 +20,13 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        OnStartPosition();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!model.isPlayerAlive)
+        if (!(model.isPlayerAlive && model.isEnemyAlive))
         {
             return;
         }
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isShooted)
             {
-                shoot();
+                Shoot();
                 isShooted = true;
             }
         }
@@ -94,16 +94,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void shoot()
+    internal void OnStartPosition()
+    {
+        transform.localPosition = new Vector2(-221, 115);
+    }
+
+    private void Shoot()
     {
         var bulletItem = Instantiate(bullet, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.identity);
-        bulletItem.GetComponent<Rigidbody2D>().rotation = rb.rotation;
-        bulletItem.GetComponent<BulletController>().SetModel(model, gameObject);
+        bulletItem.GetComponent<BulletController>().SetStartParams(gameObject, model, transform.parent, rb.rotation);
     }
 
     private void FixedUpdate()
     {
-        if (!model.isPlayerAlive)
+        if (!(model.isPlayerAlive && model.isEnemyAlive))
         {
             return;
         }
